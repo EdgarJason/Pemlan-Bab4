@@ -1,0 +1,152 @@
+import java.util.Scanner;
+
+public class Pelanggan {
+    private String nama;
+    private String id;
+    private String member;
+    private long saldo;
+    private String pin;
+    public int authCount;
+
+    //setter getter nama
+    public String getNama() {
+        return nama;
+    }
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    //setter getter id
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    //setter getter saldo
+    public long getSaldo() {
+        return saldo;
+    }
+    public void setSaldo(long saldo) {
+        this.saldo = saldo;
+    }
+
+    //setter getter member
+    public String getMember() {
+        return member;
+    }
+    public void setMember(String member) {
+        this.member = member;
+    }
+
+    //setter getter pin
+    public String getPin() {
+        return pin;
+    }
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    //constructor
+    public Pelanggan() {
+
+    }
+
+    //untuk generate id
+    public void generateID(int x){
+        int n = (int) (100000 + Math.random() * 900000);
+
+        switch(x){
+            case 1 -> {
+                String id1 = "3800%d";
+                id = String.format(id1, n);
+                member = "Silver";
+            }
+            case 2 -> {
+                String id2 = "5600%d";
+                id = String.format(id2, n);
+                member = "Gold";
+            }
+            case 3 -> {
+                String id3 = "7400%d";
+                id = String.format(id3, n);
+                member = "Platinum";
+            }
+        }
+    }
+
+    //cek kebenaran pin dan deteksi jika salah input >3
+    public void autentikasi(){
+        Scanner scan = new Scanner(System.in);
+
+        boolean womp = false;
+
+        do{
+            System.out.print("Masukkan PIN anda= ");
+            String pinx = scan.next();
+
+            if (pinx.equals(pin)) {
+                System.out.println("[SYSTEM] Autentikasi berhasil");
+                authCount=0;
+                womp = true;
+            }
+
+            //kalau pin salah streak 3x maka langsung keblokir
+            //tapi kalau salah 1x dan stlh itu benar lagi pin-nya maka kereset authCountnya
+            else {
+                authCount++;
+                System.out.println("PIN salah! Silahkan ulangi");
+                System.out.println("Attempt (max 3): " + authCount);
+
+                if (authCount >= 3) {
+                    System.out.println("Woops, Akun Anda terblokir dan tidak dapat melanjutkan!");
+                    System.exit(0);
+                }
+            }
+        }while(womp == false);
+
+    }
+
+    public void displayAcc(){
+        System.out.println("Nama    : " + nama);
+        System.out.println("ID      : " + id);
+        System.out.println("Member  : " + member);
+        System.out.println("Saldo   : Rp" + saldo);
+        System.out.println("Pin     : " + pin);
+    }
+
+    public void addSaldo(long saldox){
+        saldo += saldox;
+        System.out.println("[SYSTEM] Saldo berhasil ditambahkan");
+    }
+
+    public void kurangiSaldo(long saldoo, long hrg){
+        if(saldoo>=hrg) {
+            saldo -= hrg;
+            System.out.println("[SYSTEM] Saldo berhasil dikurangi");
+        }
+        else{
+            System.out.println("Saldo tak mencukupi! Silahkan lakukan top up");
+        }
+    }
+
+    public long discMember(long hargax) {
+        if (hargax > 1000000) {
+            if (member.equals("Silver") && hargax > 1000000) {
+                System.out.println("[SYSTEM] Pembelian diatas 1jt akan diberikan cashback 5%");
+                return (long) (hargax * 0.95);
+            } else if (member.equals("Gold") && hargax > 1000000) {
+                System.out.println("[SYSTEM] Pembelian diatas 1jt akan diberikan cashback 7% + 2%");
+                return (long) (hargax * 0.93 - (0.02 * hargax));
+            } else {
+                System.out.println("[SYSTEM] Pembelian diatas 1jt akan diberikan cashback 10% + 5%");
+                return (long) (hargax * 0.90 - (0.05 * hargax));
+            }
+        } else {
+            System.out.println("[SYSTEM] tidak mendapatkan cashback");
+            return hargax;
+        }
+    }
+
+}
