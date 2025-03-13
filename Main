@@ -1,0 +1,183 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        //isi barang-barang
+        Transaksi susu = new Transaksi("Susu Dancow",15000,100);
+        Transaksi mie = new Transaksi("Indomie Goreng",3000,400);
+        Transaksi roti = new Transaksi("Roti AOK",5000,500);
+        Transaksi joy = new Transaksi("Kinder Joy",12000, 300);
+        Transaksi kopi = new Transaksi("Kopi Susu",13000,200);
+        Transaksi emas = new Transaksi("Emas 500gr",1200000,100);
+
+        //inisialisasi pelanggan
+        Pelanggan id = new Pelanggan();
+        Transaksi[] tr = {susu, mie, roti, joy, kopi,emas};
+
+        //halaman registrasi
+        System.out.println("""
+                    SELAMAT DATANG DI SISTEM INFORMASI TRANSAKSI SWALAYAN TINY
+                    SILAHKAN LAKUKAN REGISTRASI AKUN TERLEBIH DAHULU!
+                    """);
+
+        System.out.print("Nama Anda = ");
+        id.setNama(scan.nextLine());
+
+        boolean var = true;
+        do {
+            System.out.println("""
+                    Pilih jenis keangotaan
+                    1. Silver
+                    2. Gold
+                    3. Platinum
+                    """);
+            System.out.print("Masukkan pilihan = ");
+            int keangotaan = scan.nextInt();
+
+            switch (keangotaan) {
+                case 1 -> {
+                    System.out.println("Anda memilih keanggotaan silver");
+                    id.generateID(1);
+                    var=true;
+                }
+                case 2 -> {
+                    System.out.println("Anda memilih keangotaan gold");
+                    id.generateID(2);
+                    var=true;
+                }
+                case 3 -> {
+                    System.out.println("Anda memilih keangotaan platinum");
+                    id.generateID(3);
+                    var=true;
+                }
+                default -> {
+                    System.out.println("Pilihan salah, silahkan ulangi!");
+                    var = false;
+                }
+            }
+        } while(var==false);
+
+        boolean varx = true;
+        do{
+            System.out.println();
+            System.out.print("Silahkan buat sebuah PIN 6 angka =");
+            String pinx = scan.next();
+            if (pinx.length() < 6) {
+                System.out.println("PIN kurang dari 6 angka, silahkan ulangi registrasi");
+                varx = false;
+            }
+            else if (pinx.length() > 6) {
+                System.out.println("PIN melebihi dari 6 angka, silahkan ulangi registrasi");
+                varx = false;
+            }
+            else {
+                id.setPin(pinx); //masukin nama dan pin ke atribut
+                System.out.println("REGISTRASI ANDA BERHASIL!\n");
+
+                System.out.printf("""
+                        DETAIL PENGGUNA
+                        Nama        = %s
+                        Keanggotaan = %s
+                        ID          = %s
+                        """, id.getNama(), id.getMember(), id.getId());
+                varx = true;
+            }
+        } while(varx==false);
+
+        //halaman menu menggunakan loop
+        int val=0;
+        do{
+            System.out.printf("""
+                    
+                    ==SISTEM INFORMASI TRANSAKSI SWALAYAN TINY==
+                    
+                    Saldo: Rp.%d,-
+                    
+                    Menu
+                    1. Detail Akun
+                    2. Top up
+                    3. Beli Barang
+                    0. Logout
+                    """,id.getSaldo());
+
+            System.out.print("Pilihan menu = ");
+            val = scan.nextInt();
+
+            switch(val){
+                case 1 -> {
+                    System.out.println("[1] DETAIL AKUN");
+                    id.displayAcc();
+                }
+                case 2 -> {
+                    System.out.println("[2] TOP UP");
+
+                    boolean vartp = true;
+                    do {
+                        System.out.print("Masukkan nominal top up = ");
+                        long nominal = scan.nextLong();
+
+                        if (nominal < 10000) {
+                            System.out.println("Minimal top up adalah Rp.10,000,-");
+                            vartp = false;
+                        }
+                        else{
+                            id.autentikasi();
+                            id.addSaldo(nominal);
+                            vartp = true;
+                        }
+                    } while(vartp==false);
+
+                }
+                case 3 -> {
+                    System.out.println("[3] BELI BARANG");
+                    System.out.println("Silahkan pilih barang yang ingin Anda beli");
+
+                    for (int i = 0; i < tr.length; i++) {
+                        Transaksi t = tr[i];
+                        System.out.printf("%d. %s | Harga: %d | Stok: %d%n", i + 1, t.getBarang(), t.getHarga(), t.getStok());
+                    }
+
+                    System.out.print("Silahkan pilih = ");
+                    int pilih = scan.nextInt();
+
+                    if(pilih> tr.length){
+                        System.out.println("Pilihan tidak tepat");
+                        break;
+                    }
+
+                    System.out.print("Jumlah = ");
+                    int jmlBrg = scan.nextInt();
+
+                    long hrg = tr[pilih - 1].getHarga()*jmlBrg;
+                    long varDisc = id.discMember(hrg);
+
+                    if(id.getSaldo()<varDisc || jmlBrg>tr[pilih - 1].getStok()){
+                        if(id.getSaldo()<varDisc) {
+                            System.out.println("[SYSTEM] Proses tidak dapat dilanjutkan karena saldo kurang");
+                        }
+                        else if(jmlBrg>tr[pilih - 1].getStok()) {
+                            System.out.println("[SYSTEM] Proses tidak dapat dilanjutkan karena stok kurang");
+                        }
+                    }
+                    else{
+                        id.autentikasi();
+                        id.kurangiSaldo(id.getSaldo(), varDisc);
+                        tr[pilih - 1].kurangiStok(jmlBrg);
+                        System.out.println("[SYSTEM] Proses berhasil!");
+                    }
+
+                }
+                case 0 -> {
+                    System.out.println("Terima kasih telah menggunakan layanan kami!");
+                }
+                default -> {
+                    System.out.println("Pilihan salah, silahkan ulangi kembali!");
+                }
+            }
+
+        } while(val!=0);
+
+    }
+}
