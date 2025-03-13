@@ -1,0 +1,47 @@
+public class Transaksi {
+    private String barang;
+    private long harga;
+    private int stok;
+
+    public Transaksi(String barang, long harga, int stok) {
+        this.barang = barang;
+        this.harga = harga;
+        this.stok = stok;
+    }
+
+    public String getBarang() {
+        return barang;
+    }
+
+    public void setBarang(String barang) {
+        this.barang = barang;
+    }
+
+    public long getHarga() {
+        return harga;
+    }
+
+    public void setHarga(int harga) {
+        this.harga = harga;
+    }
+
+    public int getStok() {
+        return stok;
+    }
+
+    public void setStok(int stok) {
+        this.stok = stok;
+    }
+
+    //ngurangin stok kalo ada yang beli
+    public void kurangiStok(int min){
+        if(stok>0){
+            System.out.println("[SYSTEM] Stok -"+min);
+            stok -= min;
+        }
+        else{
+            System.out.println("Stok telah habis");
+        }
+    }
+}
+
