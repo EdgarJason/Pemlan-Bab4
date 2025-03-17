@@ -34,7 +34,7 @@ public class Transaksi {
     }
 
     //ngurangin stok kalo ada yang beli
-    public void kurangiStok(int min){
+    protected void kurangiStok(int min){
         if(stok>0){
             System.out.println("[SYSTEM] Stok -"+min);
             stok -= min;
