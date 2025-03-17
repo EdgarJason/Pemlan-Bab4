@@ -6,7 +6,7 @@ public class Pelanggan {
     private String member;
     private long saldo;
     private String pin;
-    public int authCount;
+    private int authCount;
 
     //setter getter nama
     public String getNama() {
@@ -54,7 +54,7 @@ public class Pelanggan {
     }
 
     //untuk generate id
-    public void generateID(int x){
+    protected void generateID(int x){
         int n = (int) (100000 + Math.random() * 900000);
 
         switch(x){
@@ -77,7 +77,7 @@ public class Pelanggan {
     }
 
     //cek kebenaran pin dan deteksi jika salah input >3
-    public void autentikasi(){
+    protected void autentikasi(){
         Scanner scan = new Scanner(System.in);
 
         boolean womp = false;
@@ -108,7 +108,7 @@ public class Pelanggan {
 
     }
 
-    public void displayAcc(){
+    protected void displayAcc(){
         System.out.println("Nama    : " + nama);
         System.out.println("ID      : " + id);
         System.out.println("Member  : " + member);
@@ -116,12 +116,12 @@ public class Pelanggan {
         System.out.println("Pin     : " + pin);
     }
 
-    public void addSaldo(long saldox){
+    protected void addSaldo(long saldox){
         saldo += saldox;
         System.out.println("[SYSTEM] Saldo berhasil ditambahkan");
     }
 
-    public void kurangiSaldo(long saldoo, long hrg){
+    protected void kurangiSaldo(long saldoo, long hrg){
         if(saldoo>=hrg) {
             saldo -= hrg;
             System.out.println("[SYSTEM] Saldo berhasil dikurangi");
@@ -131,7 +131,7 @@ public class Pelanggan {
         }
     }
 
-    public long discMember(long hargax) {
+    protected long discMember(long hargax) {
         if (hargax > 1000000) {
             if (member.equals("Silver") && hargax > 1000000) {
                 System.out.println("[SYSTEM] Pembelian diatas 1jt akan diberikan cashback 5%");
@@ -143,7 +143,8 @@ public class Pelanggan {
                 System.out.println("[SYSTEM] Pembelian diatas 1jt akan diberikan cashback 10% + 5%");
                 return (long) (hargax * 0.90 - (0.05 * hargax));
             }
-        } else {
+        }
+        else {
             System.out.println("[SYSTEM] tidak mendapatkan cashback");
             return hargax;
         }
